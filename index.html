@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome to the World of Pronouns! Quiz</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#fdf4ff;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:20px}
+#app{width:100%;max-width:480px;margin:0 auto}
+.card{background:#fff;border-radius:20px;box-shadow:0 4px 28px rgba(0,0,0,.10);width:100%;padding:0 0 24px 0;overflow:hidden}
+.menu-inner{padding:28px 24px 8px}
+.brand{text-align:center;font-size:.68rem;text-transform:uppercase;letter-spacing:.13em;color:#9e9e9e;margin-bottom:6px}
+.menu-card h1{font-size:1.2rem;color:#4a148c;text-align:center;margin-bottom:3px}
+.menu-emoji{text-align:center;font-size:1.8rem;margin-bottom:4px}
+.menu-subtitle{text-align:center;font-size:.8rem;color:#607d8b;margin-bottom:20px}
+.menu-btn{display:block;width:100%;padding:12px 16px;margin:8px 0;border:none;border-radius:11px;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .2s;color:#fff}
+.menu-btn:hover{transform:translateY(-1px);filter:brightness(1.1)}
+.stats-bar{display:flex;justify-content:space-around;padding:14px 16px 12px;border-bottom:1px solid #f0f0f0}
+.stat-item{text-align:center;flex:1}
+.stat-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.stat-label.pts{color:#f59e0b}.stat-label.ok{color:#16a34a}.stat-label.err{color:#dc2626}.stat-label.pct{color:#7c3aed}
+.stat-value{font-size:1.05rem;font-weight:800;color:#1a1a2e}
+.sec-header{padding:14px 20px 0}
+.sec-header h2{font-size:.97rem;font-weight:800;color:#4a148c;display:flex;align-items:center;gap:6px}
+.sec-dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex-shrink:0}
+.sec-header p{font-size:.73rem;color:#78909c;margin-top:2px}
+.progress-wrap{padding:10px 20px 14px}
+.progress-row{display:flex;justify-content:space-between;font-size:.72rem;color:#9e9e9e;margin-bottom:5px}
+.progress-bar-bg{background:#f0f0f0;border-radius:8px;height:6px}
+.progress-bar-fill{height:6px;border-radius:8px;transition:width .35s}
+.q-body{padding:0 20px}
+.q-text{font-size:.95rem;font-weight:700;color:#1a1a2e;margin-bottom:14px;line-height:1.55}
+.q-num{color:#7b1fa2}
+.opt-btn{display:block;width:100%;text-align:left;padding:12px 16px;margin:7px 0;border:2px solid #e8e8f0;border-radius:12px;background:#f8f8fc;font-size:.91rem;cursor:pointer;transition:all .18s;color:#2d2d3a;font-weight:500}
+.opt-btn:hover:not(:disabled){border-color:#7b1fa2;background:#f3e8ff;color:#4a148c}
+.opt-btn.correct{border-color:#16a34a!important;background:#dcfce7!important;color:#14532d!important;font-weight:700}
+.opt-btn.wrong{border-color:#dc2626!important;background:#fee2e2!important;color:#7f1d1d!important}
+.opt-btn:disabled{cursor:default}
+.feedback{padding:10px 14px;border-radius:10px;font-size:.87rem;font-weight:700;margin:10px 0;text-align:center}
+.feedback.correct{background:#dcfce7;color:#14532d}
+.feedback.wrong{background:#fee2e2;color:#7f1d1d}
+.hint-btn{display:block;width:100%;padding:10px;margin:10px 0;border:2px dashed #fb8c00;border-radius:10px;background:#fff8e1;color:#e65100;font-size:.85rem;cursor:pointer;font-weight:700;transition:all .18s}
+.hint-btn:hover{background:#ffe0b2}
+.hint-box{background:#fff3e0;border:1.5px solid #fcd34d;border-radius:9px;padding:10px 13px;font-size:.83rem;color:#92400e;margin:8px 0;font-weight:500}
+.next-btn{display:block;width:100%;padding:13px;color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:800;cursor:pointer;margin-top:12px;transition:all .2s}
+.exit-btn{display:block;width:calc(100% - 40px);margin:12px 20px 0;padding:10px;background:#fff0f0;border:2px solid #ef9a9a;border-radius:11px;color:#c62828;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s}
+.exit-btn:hover{background:#ef9a9a;border-color:#c62828;color:#b71c1c}
+.end-wrap{padding:28px 24px 8px;text-align:center}
+.end-icon{font-size:3.2rem;margin-bottom:8px}
+.end-title{font-size:1.3rem;font-weight:800;color:#4a148c;margin-bottom:6px}
+.end-msg{font-size:.9rem;color:#607d8b;margin-bottom:18px}
+.stars{display:flex;justify-content:center;gap:7px;margin-bottom:18px}
+.star{font-size:2.1rem;opacity:0;transform:scale(0);transition:all .38s cubic-bezier(.34,1.56,.64,1)}
+.star.show{opacity:1;transform:scale(1)}
+.end-pills{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-bottom:22px}
+.end-pill{padding:9px 16px;border-radius:22px;font-size:.87rem;font-weight:800}
+.ep-pts{background:#fef3c7;color:#92400e}.ep-ok{background:#dcfce7;color:#14532d}
+.ep-err{background:#fee2e2;color:#7f1d1d}.ep-pct{background:#ede9fe;color:#4c1d95}
+.try-btn{display:block;width:100%;padding:13px;color:#fff;border:none;border-radius:12px;font-size:.97rem;font-weight:800;cursor:pointer;margin-bottom:10px}
+.menu-back-btn{display:block;width:100%;padding:12px;background:#f5f5f5;border:2px solid #d1d5db;border-radius:12px;font-size:.92rem;font-weight:700;color:#374151;cursor:pointer;margin-bottom:14px}
+.review-box{background:#f5f3ff;border:2px solid #c4b5fd;border-radius:14px;padding:20px;margin-top:16px;text-align:left}
+.review-box h3{font-size:.92rem;color:#1a1a2e;margin-bottom:10px;font-weight:800}
+.review-box .rq{font-weight:800;font-size:.9rem;color:#4a148c;margin-bottom:10px}
+.review-box p{font-size:.82rem;color:#4b5563;line-height:1.65;margin-bottom:10px}
+.review-link-btn{display:block;width:100%;padding:12px;background:#1a1a2e;color:#fff;border:none;border-radius:10px;font-size:.88rem;font-weight:800;cursor:pointer;margin-bottom:8px;text-align:center;text-decoration:none;transition:background .2s}
+.review-link-btn:hover{background:#2e2e4e}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+var PAPERBACK_ASIN='';
+var HARDCOVER_ASIN='';
+
+var SECTIONS=[
+  {
+    id:'sec1',title:'Section 1 \u2013 Subject Pronouns',emoji:'\uD83D\uDC64',
+    subtitle:'I, You, He, She, It, We, They',
+    grad:'linear-gradient(135deg,#8e24aa,#6a1b9a)',dot:'#8e24aa',
+    questions:[
+      {q:'Which pronoun replaces ONE boy or man doing the action?',hint:'Think of a brother, dad, or male classmate.',options:[{t:'He',c:true},{t:'She',c:false},{t:'They',c:false},{t:'It',c:false}]},
+      {q:'Which subject pronoun do you use when talking about YOURSELF doing the action?',hint:'Only one pronoun means just you, alone.',options:[{t:'I',c:true},{t:'We',c:false},{t:'Me',c:false},{t:'You',c:false}]},
+      {q:'Which pronoun replaces a thing, animal, or place doing the action?',hint:'"The bus is late. ___ always comes at 8."',options:[{t:'It',c:true},{t:'He',c:false},{t:'She',c:false},{t:'They',c:false}]},
+      {q:'Which pronoun means YOU plus at least one other person doing the action?',hint:'"My cousin and I are building a fort." What pronoun fits?',options:[{t:'We',c:true},{t:'They',c:false},{t:'Us',c:false},{t:'I',c:false}]},
+      {q:'Which pronoun replaces TWO OR MORE people doing the action?',hint:'"Max and Lilly raced to the treehouse. ___ climbed up fast."',options:[{t:'They',c:true},{t:'We',c:false},{t:'It',c:false},{t:'He',c:false}]},
+      {q:'"Emma is happy." \u2192 Which is the correct pronoun swap?',hint:'Emma is one girl.',options:[{t:'She is happy.',c:true},{t:'He is happy.',c:false},{t:'It is happy.',c:false},{t:'They are happy.',c:false}]},
+      {q:'Where does a subject pronoun go in a sentence?',hint:'"She is cooking." \u2014 where is "She"?',options:[{t:'Before the verb',c:true},{t:'After the verb',c:false},{t:'At the end of the sentence',c:false},{t:'After the noun it replaces',c:false}]},
+      {q:'"Mom is tired." \u2192 What is the correct question form?',hint:'Move the helper word "is" in front of the pronoun.',options:[{t:'Is she tired?',c:true},{t:'She is tired?',c:false},{t:'Does she tired?',c:false},{t:'Is her tired?',c:false}]},
+      {q:'Why is "you" called a sneaky pronoun?',hint:'Think about talking to one friend vs. a whole class.',options:[{t:'It stays the same for one person or a whole group',c:true},{t:'It changes depending on how many people you talk to',c:false},{t:'It can only be used for groups',c:false},{t:'It is the same as "I"',c:false}]},
+      {q:'"Cousin Max and I are building a fort." \u2192 Correct pronoun swap?',hint:'You + someone else = ?',options:[{t:'We are building a fort.',c:true},{t:'They are building a fort.',c:false},{t:'I am building a fort.',c:false},{t:'He is building a fort.',c:false}]},
+      {q:'Which pronoun replaces ONE girl or woman doing the action?',hint:'Think of a sister, mom, or female teacher.',options:[{t:'She',c:true},{t:'He',c:false},{t:'They',c:false},{t:'It',c:false}]},
+      {q:'"Cousin Lilly and Aunt Rosa are hungry." \u2192 Correct question form?',hint:'Two people = they. Move the helper word in front.',options:[{t:'Are they hungry?',c:true},{t:'Is they hungry?',c:false},{t:'Do they hungry?',c:false},{t:'They are hungry?',c:false}]},
+      {q:'Which sentence correctly uses the subject pronoun "we"?',hint:'"We" = you + others doing the action.',options:[{t:'We rode the bus to the museum.',c:true},{t:'She gave we a gift.',c:false},{t:'We is happy today.',c:false},{t:'Mom thanked we.',c:false}]},
+      {q:'"Mr. Brown is grading papers." \u2192 Correct pronoun swap?',hint:'Mr. Brown is one man.',options:[{t:'He is grading papers.',c:true},{t:'She is grading papers.',c:false},{t:'They are grading papers.',c:false},{t:'It is grading papers.',c:false}]},
+      {q:'How many subject pronouns are there in English?',hint:'I, you, he, she, it, we, they \u2014 count them!',options:[{t:'7',c:true},{t:'5',c:false},{t:'6',c:false},{t:'8',c:false}]}
+    ]
+  },
+  {
+    id:'sec2',title:'Section 2 \u2013 Object Pronouns',emoji:'\uD83C\uDFAF',
+    subtitle:'Me, You, Him, Her, It, Us, Them',
+    grad:'linear-gradient(135deg,#1e88e5,#1565c0)',dot:'#1e88e5',
+    questions:[
+      {q:'What does an object pronoun do in a sentence?',hint:'Think about who CATCHES the action.',options:[{t:'It receives the action',c:true},{t:'It does the action',c:false},{t:'It describes the action',c:false},{t:'It connects two sentences',c:false}]},
+      {q:'Which object pronoun replaces ONE man receiving the action?',hint:'"Dad thanked ___." (one man)',options:[{t:'him',c:true},{t:'her',c:false},{t:'them',c:false},{t:'he',c:false}]},
+      {q:'Which object pronoun replaces the speaker (yourself) receiving the action?',hint:'"Grandma hugged ___." (you, the speaker)',options:[{t:'me',c:true},{t:'I',c:false},{t:'us',c:false},{t:'my',c:false}]},
+      {q:'"Dad hugged Grandma." \u2192 Correct object pronoun swap?',hint:'Grandma is one woman.',options:[{t:'Dad hugged her.',c:true},{t:'Dad hugged him.',c:false},{t:'Dad hugged them.',c:false},{t:'Dad hugged it.',c:false}]},
+      {q:'Which pair correctly shows subject pronoun \u2192 object pronoun?',hint:'Think: he \u2192 ?, she \u2192 ?, we \u2192 ?',options:[{t:'he \u2192 him',c:true},{t:'he \u2192 her',c:false},{t:'she \u2192 him',c:false},{t:'we \u2192 them',c:false}]},
+      {q:'In "He called her" \u2014 which is the subject and which is the object?',hint:'Who did the calling? Who received the call?',options:[{t:'He = subject, her = object',c:true},{t:'her = subject, He = object',c:false},{t:'Both are subject pronouns',c:false},{t:'Both are object pronouns',c:false}]},
+      {q:'"Aunt Rosa invited Mr. Brown and Grandma to dinner." \u2192 Correct swap?',hint:'Two people receiving the action.',options:[{t:'Aunt Rosa invited them to dinner.',c:true},{t:'Aunt Rosa invited him to dinner.',c:false},{t:'Aunt Rosa invited us to dinner.',c:false},{t:'Aunt Rosa invited her to dinner.',c:false}]},
+      {q:'Which two pronouns stay exactly the same as subject OR object?',hint:'Think of the pairs: I/me, he/him \u2014 but which stay unchanged?',options:[{t:'you and it',c:true},{t:'me and us',c:false},{t:'him and her',c:false},{t:'them and us',c:false}]},
+      {q:'"Mom made lunch for Dad and me." \u2192 Correct object pronoun swap?',hint:'Dad + me = us.',options:[{t:'Mom made lunch for us.',c:true},{t:'Mom made lunch for them.',c:false},{t:'Mom made lunch for me.',c:false},{t:'Mom made lunch for him.',c:false}]},
+      {q:'Where does an object pronoun usually appear?',hint:'"Grandma thanked him." \u2014 where is "him"?',options:[{t:'After the verb, or after "to," "for," or "with"',c:true},{t:'Before the verb',c:false},{t:'At the beginning of the sentence',c:false},{t:'After the subject',c:false}]},
+      {q:'"Who did Mr. Brown praise? (Cousin Lilly)" \u2192 He praised ___.',hint:'Cousin Lilly is one girl.',options:[{t:'her',c:true},{t:'him',c:false},{t:'them',c:false},{t:'it',c:false}]},
+      {q:'Which sentence uses an object pronoun CORRECTLY?',hint:'The object pronoun comes after the verb or preposition.',options:[{t:'Grandma sat with her.',c:true},{t:'Her sat with Grandma.',c:false},{t:'She sat with she.',c:false},{t:'Grandma sat with she.',c:false}]},
+      {q:'"Grandma called Dad and me for lunch." \u2192 Correct swap?',hint:'Dad + me = us.',options:[{t:'Grandma called us for lunch.',c:true},{t:'Grandma called them for lunch.',c:false},{t:'Grandma called me for lunch.',c:false},{t:'Grandma called him for lunch.',c:false}]},
+      {q:'True or False: "Him" is an object pronoun.',hint:'"I saw him." \u2014 is "him" doing or receiving the action?',options:[{t:'True',c:true},{t:'False',c:false},{t:'Sometimes',c:false},{t:'Only in questions',c:false}]},
+      {q:'How many object pronouns are there in English?',hint:'Me, you, him, her, it, us, them \u2014 count them!',options:[{t:'7',c:true},{t:'5',c:false},{t:'6',c:false},{t:'8',c:false}]}
+    ]
+  },
+  {
+    id:'sec3',title:'Section 3 \u2013 Possessive Pronouns & Adjectives',emoji:'\uD83C\uDFE0',
+    subtitle:'My/Mine, Your/Yours, His, Her/Hers, Its, Our/Ours, Their/Theirs',
+    grad:'linear-gradient(135deg,#43a047,#2e7d32)',dot:'#43a047',
+    questions:[
+      {q:'What is a possessive adjective?',hint:'It goes RIGHT BEFORE a noun to show who owns it.',options:[{t:'A word that comes before a noun to show ownership',c:true},{t:'A word that stands alone to show ownership',c:false},{t:'A word that receives the action',c:false},{t:'A word that does the action',c:false}]},
+      {q:'Which is the correct possessive adjective for "I"?',hint:'"___ backpack is blue." (your own backpack)',options:[{t:'my',c:true},{t:'mine',c:false},{t:'me',c:false},{t:'I',c:false}]},
+      {q:'What is a possessive pronoun?',hint:'It stands ALONE \u2014 no noun follows it.',options:[{t:'A word that stands alone to show ownership (no noun after it)',c:true},{t:'A word placed before a noun to show ownership',c:false},{t:'A word that does the action',c:false},{t:'A word that connects two sentences',c:false}]},
+      {q:'Which sentence uses a POSSESSIVE ADJECTIVE?',hint:'Look for ownership word + noun together.',options:[{t:'This is her book.',c:true},{t:'That book is hers.',c:false},{t:'The book belongs to her.',c:false},{t:'She owns the book.',c:false}]},
+      {q:'Which sentence uses a POSSESSIVE PRONOUN?',hint:'Look for the ownership word that stands alone without a noun after it.',options:[{t:'That book is hers.',c:true},{t:'This is her book.',c:false},{t:'She has a book.',c:false},{t:'Her book is new.',c:false}]},
+      {q:'Which is the correct possessive PRONOUN for "she"?',hint:'It stands alone: "That scarf is ___."',options:[{t:'hers',c:true},{t:'her',c:false},{t:'she',c:false},{t:'herself',c:false}]},
+      {q:'Which is the correct possessive ADJECTIVE for "they"?',hint:'"___ car is in the driveway." (belongs to them)',options:[{t:'their',c:true},{t:'theirs',c:false},{t:'them',c:false},{t:'they',c:false}]},
+      {q:'Which sentence uses the possessive pronoun correctly?',hint:'Possessive pronoun = stands alone, no noun right after it.',options:[{t:'That backpack is mine.',c:true},{t:'That is mine backpack.',c:false},{t:'Mine backpack is blue.',c:false},{t:'The backpack mine is blue.',c:false}]},
+      {q:'"Aunt Rosa lost a glove. Is this ___?" \u2014 What fills the blank?',hint:'The glove belongs to Aunt Rosa \u2014 use a possessive pronoun standing alone.',options:[{t:'hers',c:true},{t:'her',c:false},{t:'she',c:false},{t:'their',c:false}]},
+      {q:'Which is the correct possessive PRONOUN for "we"?',hint:'"This big house is ___." (belongs to us)',options:[{t:'ours',c:true},{t:'our',c:false},{t:'us',c:false},{t:'we',c:false}]},
+      {q:'Which sentence has a MISTAKE in the possessive?',hint:'Look for an incorrect apostrophe or wrong pronoun form.',options:[{t:'Is this umbrella your\'s?',c:true},{t:'Is this umbrella yours?',c:false},{t:'That backpack is hers.',c:false},{t:'This is their car.',c:false}]},
+      {q:'"Grandma\'s piano has been in the family for years \u2014 it\'s ___." Which is correct?',hint:'Use a possessive pronoun that stands alone.',options:[{t:'hers',c:true},{t:'her',c:false},{t:'their',c:false},{t:'its',c:false}]},
+      {q:'Which is the correct possessive ADJECTIVE for "he"?',hint:'"___ backpack is the one with the broken zipper."',options:[{t:'his',c:true},{t:'him',c:false},{t:'he',c:false},{t:'himself',c:false}]},
+      {q:'"That backpack is her\'s, not mine." \u2014 What is wrong?',hint:'Possessive pronouns NEVER use an apostrophe.',options:[{t:'"her\'s" should be "hers" \u2014 no apostrophe needed',c:true},{t:'"mine" should be "my"',c:false},{t:'"That" should be "This"',c:false},{t:'Nothing is wrong',c:false}]},
+      {q:'Which pair correctly matches possessive adjective \u2192 possessive pronoun?',hint:'One goes before a noun, one stands alone.',options:[{t:'my \u2192 mine',c:true},{t:'my \u2192 me',c:false},{t:'our \u2192 us',c:false},{t:'their \u2192 them',c:false}]}
+    ]
+  },
+  {
+    id:'sec4',title:'Section 4 \u2013 Reflexive Pronouns',emoji:'\uD83D\uDD04',
+    subtitle:'Myself, Yourself, Himself, Herself, Itself, Ourselves, Yourselves, Themselves',
+    grad:'linear-gradient(135deg,#f57c00,#e65100)',dot:'#f57c00',
+    questions:[
+      {q:'What is a reflexive pronoun?',hint:'Think about the action "bouncing back" to the same person.',options:[{t:'A pronoun used when the subject and object are the same person',c:true},{t:'A pronoun that receives the action from someone else',c:false},{t:'A pronoun that does the action',c:false},{t:'A pronoun that shows ownership',c:false}]},
+      {q:'Which reflexive pronoun matches the subject "I"?',hint:'"I taught ___ how to paint."',options:[{t:'myself',c:true},{t:'yourself',c:false},{t:'himself',c:false},{t:'itself',c:false}]},
+      {q:'Which reflexive pronoun matches the subject "he"?',hint:'"Cousin Max taught ___ to ride a skateboard."',options:[{t:'himself',c:true},{t:'hisself',c:false},{t:'herself',c:false},{t:'itself',c:false}]},
+      {q:'Which reflexive pronoun matches the subject "she"?',hint:'"Aunt Rosa taught ___ to bake bread."',options:[{t:'herself',c:true},{t:'himself',c:false},{t:'itself',c:false},{t:'yourself',c:false}]},
+      {q:'Which reflexive pronoun matches the subject "it"?',hint:'"Buddy chased his tail and finally caught ___."',options:[{t:'itself',c:true},{t:'himself',c:false},{t:'herself',c:false},{t:'themselves',c:false}]},
+      {q:'Which reflexive pronoun matches the subject "we"?',hint:'"We prepared ___ for the big game."',options:[{t:'ourselves',c:true},{t:'themselves',c:false},{t:'yourself',c:false},{t:'itself',c:false}]},
+      {q:'Which reflexive pronoun matches the subject "they"?',hint:'"The twins congratulated ___ after the race."',options:[{t:'themselves',c:true},{t:'theirselves',c:false},{t:'ourselves',c:false},{t:'itself',c:false}]},
+      {q:'How many reflexive pronouns are there in English?',hint:'myself, yourself, himself, herself, itself, ourselves, yourselves, themselves',options:[{t:'8',c:true},{t:'7',c:false},{t:'6',c:false},{t:'9',c:false}]},
+      {q:'Which sentence uses a reflexive pronoun CORRECTLY?',hint:'The subject and the receiver of the action must be the same person.',options:[{t:'Uncle Rick hurt himself while fixing the fence.',c:true},{t:'Uncle Rick hurt hisself while fixing the fence.',c:false},{t:'Uncle Rick hurt him while fixing the fence.',c:false},{t:'Uncle Rick hurt herself while fixing the fence.',c:false}]},
+      {q:'"Uncle Rick burned ___ on the hot kettle." \u2014 Which is correct?',hint:'Uncle Rick is one man \u2014 the action comes back to himself.',options:[{t:'himself',c:true},{t:'hisself',c:false},{t:'him',c:false},{t:'itself',c:false}]},
+      {q:'Which sentence has a MISTAKE in the reflexive pronoun?',hint:'Watch out for made-up words like "hisself" or "theirselves".',options:[{t:'The twins congratulated theirselves after the race.',c:true},{t:'She taught herself to swim.',c:false},{t:'I made myself a sandwich.',c:false},{t:'They enjoyed themselves at the fair.',c:false}]},
+      {q:'"Did you and Cousin Lilly enjoy ___ at the fair?" \u2014 Which is correct?',hint:'Two people being addressed = yourselves.',options:[{t:'yourselves',c:true},{t:'yourself',c:false},{t:'youself',c:false},{t:'themselves',c:false}]},
+      {q:'Which sentence uses a reflexive pronoun correctly?',hint:'The doer and receiver must be the same person.',options:[{t:'She taught herself to swim.',c:true},{t:'She taught her to swim.',c:false},{t:'Her taught herself to swim.',c:false},{t:'She herself taught to swim.',c:false}]},
+      {q:'"Buddy scratched ___ behind the ear." \u2014 Which is correct?',hint:'Buddy is an animal \u2014 use "it" form.',options:[{t:'itself',c:true},{t:'himself',c:false},{t:'herself',c:false},{t:'themselves',c:false}]},
+      {q:'Which reflexive pronoun matches the subject "you" (plural \u2014 talking to a group)?',hint:'"Please help ___ to the cookies!" (talking to a whole group)',options:[{t:'yourselves',c:true},{t:'yourself',c:false},{t:'themselves',c:false},{t:'ourselves',c:false}]}
+    ]
+  },
+  {
+    id:'sec5',title:'Section 5 \u2013 Demonstrative Pronouns',emoji:'\uD83D\uDC46',
+    subtitle:'This, That, These, Those',
+    grad:'linear-gradient(135deg,#e53935,#b71c1c)',dot:'#e53935',
+    questions:[
+      {q:'What does a demonstrative pronoun do?',hint:'Think about pointing at something near or far.',options:[{t:'It points to something specific, telling us near or far, one or many',c:true},{t:'It replaces a noun doing the action',c:false},{t:'It shows ownership',c:false},{t:'It connects the subject to the verb',c:false}]},
+      {q:'Which demonstrative pronoun refers to ONE thing NEAR you?',hint:'"___ is the juiciest apple I\'ve ever had." (holding the apple)',options:[{t:'This',c:true},{t:'That',c:false},{t:'These',c:false},{t:'Those',c:false}]},
+      {q:'Which demonstrative pronoun refers to ONE thing FAR from you?',hint:'"___ is Mr. Brown\'s car parked far down the street."',options:[{t:'That',c:true},{t:'This',c:false},{t:'These',c:false},{t:'Those',c:false}]},
+      {q:'Which demonstrative pronoun refers to MANY things NEAR you?',hint:'"___ are the shoes I got for my birthday." (right here)',options:[{t:'These',c:true},{t:'Those',c:false},{t:'This',c:false},{t:'That',c:false}]},
+      {q:'Which demonstrative pronoun refers to MANY things FAR from you?',hint:'"(pointing at shoes far across the room) ___ are Cousin Lilly\'s favorite sneakers."',options:[{t:'Those',c:true},{t:'These',c:false},{t:'That',c:false},{t:'This',c:false}]},
+      {q:'How many demonstrative pronouns are there?',hint:'This, that, these, those \u2014 count them!',options:[{t:'4',c:true},{t:'3',c:false},{t:'5',c:false},{t:'6',c:false}]},
+      {q:'Which sentence uses a demonstrative pronoun CORRECTLY?',hint:'Check that near/far and one/many all match.',options:[{t:'This is my favorite book.',c:true},{t:'This are my favorite books.',c:false},{t:'Those is very heavy.',c:false},{t:'These is my dog.',c:false}]},
+      {q:'"Those is Mr. Brown\'s favorite books." \u2014 What is wrong?',hint:'"Those" is plural \u2014 it needs a plural verb.',options:[{t:'"Those" needs the verb "are" not "is"',c:true},{t:'"Those" should be "These"',c:false},{t:'"Those" should be "That"',c:false},{t:'Nothing is wrong',c:false}]},
+      {q:'"This is a loudest thunderstorm we\'ve had all summer." \u2014 Near or far?',hint:'Think: is the thunderstorm happening right now, nearby?',options:[{t:'Near \u2014 it\'s happening right now',c:true},{t:'Far \u2014 it happened long ago',c:false},{t:'Near \u2014 but it should be "These"',c:false},{t:'Far \u2014 it should be "Those"',c:false}]},
+      {q:'Which sentence is INCORRECT?',hint:'Check that singular pronouns use "is" and plural use "are".',options:[{t:'These is my favorite shoes.',c:true},{t:'This is my favorite book.',c:false},{t:'Those are Cousin Lilly\'s sneakers.',c:false},{t:'That is Mr. Brown\'s car.',c:false}]},
+      {q:'"___ are the shoes I got for my birthday." (shoes right here) \u2014 Which fits?',hint:'Many things, near you.',options:[{t:'These',c:true},{t:'Those',c:false},{t:'This',c:false},{t:'That',c:false}]},
+      {q:'What is the rule for verbs after demonstrative pronouns?',hint:'"This is" / "These are" \u2014 what pattern do you see?',options:[{t:'This and That use "is"; These and Those use "are"',c:true},{t:'This and These use "is"; That and Those use "are"',c:false},{t:'All four always use "is"',c:false},{t:'All four always use "are"',c:false}]},
+      {q:'In the sentence "This is my favorite book, but that one is yours" \u2014 what type is "This"?',hint:'"This" points to something specific nearby.',options:[{t:'Demonstrative pronoun',c:true},{t:'Possessive pronoun',c:false},{t:'Subject pronoun',c:false},{t:'Reflexive pronoun',c:false}]},
+      {q:'In "This is my favorite book, but that one is yours" \u2014 what type is "yours"?',hint:'"Yours" shows ownership and stands alone without a noun after it.',options:[{t:'Possessive pronoun',c:true},{t:'Demonstrative pronoun',c:false},{t:'Object pronoun',c:false},{t:'Reflexive pronoun',c:false}]},
+      {q:'Which sentence uses "those" correctly?',hint:'"Those" = many, far.',options:[{t:'Those are the books on the top shelf.',c:true},{t:'Those is very heavy.',c:false},{t:'Those is my dog far away.',c:false},{t:'Those am my favorite.',c:false}]}
+    ]
+  },
+  {
+    id:'sec6',title:'Section 6 \u2013 Mixed Review',emoji:'\uD83D\uDCDA',
+    subtitle:'All pronoun types together',
+    grad:'linear-gradient(135deg,#00838f,#006064)',dot:'#00838f',
+    questions:[
+      {q:'"___ scored the winning goal." (one boy) \u2014 Which pronoun type AND word?',hint:'He does the action = subject pronoun.',options:[{t:'Subject pronoun: He',c:true},{t:'Object pronoun: Him',c:false},{t:'Possessive adjective: His',c:false},{t:'Reflexive: Himself',c:false}]},
+      {q:'"Grandma gave the cookies to ___." (two people) \u2014 Which is correct?',hint:'Two people receiving the cookies.',options:[{t:'them',c:true},{t:'they',c:false},{t:'their',c:false},{t:'themselves',c:false}]},
+      {q:'"That backpack is Uncle Rick\'s \u2014 it\'s ___." \u2014 Which is correct?',hint:'Possessive pronoun that stands alone.',options:[{t:'his',c:true},{t:'him',c:false},{t:'he',c:false},{t:'himself',c:false}]},
+      {q:'"Cousin Max taught ___ to ride a skateboard." \u2014 Which is correct?',hint:'The action comes back to Cousin Max himself.',options:[{t:'himself',c:true},{t:'hisself',c:false},{t:'him',c:false},{t:'itself',c:false}]},
+      {q:'Which sentence has a pronoun MISTAKE?',hint:'Look for a wrong pronoun form.',options:[{t:'Him and Cousin Lilly went to the store.',c:true},{t:'He and Cousin Lilly went to the store.',c:false},{t:'She and Cousin Max built a fort.',c:false},{t:'They thanked Grandma for dinner.',c:false}]},
+      {q:'"___ backpack is the one with the broken zipper." (Uncle Rick\'s) \u2014 Which is correct?',hint:'Possessive adjective before a noun.',options:[{t:'His',c:true},{t:'Him',c:false},{t:'He',c:false},{t:'Himself',c:false}]},
+      {q:'"Uncle Rick and Aunt Rosa are visiting. ___ are bringing a pie." \u2014 Which is correct?',hint:'Two people doing the action.',options:[{t:'They',c:true},{t:'Them',c:false},{t:'Their',c:false},{t:'Themselves',c:false}]},
+      {q:'"That treehouse belongs to Cousin Max and Cousin Lilly \u2014 it\'s ___." \u2014 Which is correct?',hint:'Possessive pronoun standing alone (two people).',options:[{t:'theirs',c:true},{t:'their',c:false},{t:'them',c:false},{t:'they',c:false}]},
+      {q:'"Me and Cousin Max built a blanket fort." \u2014 What is wrong?',hint:'Think about which pronoun should be the subject (doing the action).',options:[{t:'"Me" should be "I" \u2014 the subject pronoun',c:true},{t:'"Cousin Max" should come first',c:false},{t:'"built" should be "build"',c:false},{t:'Nothing is wrong',c:false}]},
+      {q:'"The dog wagged it\'s tail happily." \u2014 What is wrong?',hint:'"It\'s" with an apostrophe means "it is" \u2014 not ownership.',options:[{t:'"it\'s" should be "its" (no apostrophe for ownership)',c:true},{t:'"wagged" should be "wagging"',c:false},{t:'"The dog" should be "It"',c:false},{t:'Nothing is wrong',c:false}]},
+      {q:'"Those is Mr. Brown\'s favorite books." \u2014 What is wrong?',hint:'"Those" is plural.',options:[{t:'"is" should be "are"',c:true},{t:'"Those" should be "This"',c:false},{t:'"favorite" should be "favourites"',c:false},{t:'Nothing is wrong',c:false}]},
+      {q:'Which sentence uses ALL pronoun rules correctly?',hint:'Check subject, object, possessive, and reflexive all match.',options:[{t:'She taught herself to swim, and her coach praised her.',c:true},{t:'Her taught herself to swim, and her coach praised she.',c:false},{t:'She taught herself to swim, and her coach praised she.',c:false},{t:'She taught herself to swim, and her coach praised herself.',c:false}]},
+      {q:'"Buddy scratched ___ behind the ear." \u2014 Which reflexive pronoun is correct?',hint:'Buddy is an animal = "it" form.',options:[{t:'itself',c:true},{t:'himself',c:false},{t:'herself',c:false},{t:'themselves',c:false}]},
+      {q:'"___ are the shoes I got for my birthday." (shoes right here) \u2014 Which fits?',hint:'Many things, near you.',options:[{t:'These',c:true},{t:'Those',c:false},{t:'This',c:false},{t:'That',c:false}]},
+      {q:'Which sentence correction is CORRECT?',hint:'"Theirselves" is not a real word.',options:[{t:'"The twins congratulated theirselves" \u2192 "themselves"',c:true},{t:'"The twins congratulated theirselves" \u2192 "theyselves"',c:false},{t:'"The twins congratulated theirselves" \u2192 "ourself"',c:false},{t:'"The twins congratulated theirselves" is already correct',c:false}]}
+    ]
+  },
+  {
+    id:'mastery',title:'Pronoun Mastery Test',emoji:'\uD83C\uDFC6',
+    subtitle:'All 6 types \u2014 Subject, Object, Possessive, Reflexive, Demonstrative, Mixed',
+    grad:'linear-gradient(135deg,#7b1fa2,#4a148c)',dot:'#7b1fa2',
+    questions:[
+      {q:'"Cousin Max loves soccer. ___ practices every day after school." \u2014 Which is correct?',hint:'Cousin Max is one boy doing the action.',options:[{t:'He',c:true},{t:'Him',c:false},{t:'His',c:false},{t:'They',c:false}]},
+      {q:'"Grandma baked a pie. Everyone thanked ___ for the dessert." \u2014 Which is correct?',hint:'Grandma is one woman receiving the thanks.',options:[{t:'her',c:true},{t:'she',c:false},{t:'hers',c:false},{t:'them',c:false}]},
+      {q:'"Aunt Rosa lost a glove. Is this ___?" \u2014 Which is correct?',hint:'Possessive pronoun standing alone.',options:[{t:'hers',c:true},{t:'her',c:false},{t:'she',c:false},{t:'their',c:false}]},
+      {q:'"Uncle Rick hurt ___ while fixing the fence." \u2014 Which is correct?',hint:'The action comes back to Uncle Rick himself.',options:[{t:'himself',c:true},{t:'hisself',c:false},{t:'him',c:false},{t:'itself',c:false}]},
+      {q:'"Cousin Lilly and Cousin Max built a fort. ___ are very proud of it." \u2014 Which is correct?',hint:'Two people doing the action.',options:[{t:'They',c:true},{t:'Them',c:false},{t:'Their',c:false},{t:'We',c:false}]},
+      {q:'"___ scored the winning goal in the last minute." (one boy) \u2014 Which is correct?',hint:'Subject pronoun for one boy.',options:[{t:'He',c:true},{t:'Him',c:false},{t:'His',c:false},{t:'They',c:false}]},
+      {q:'"Grandma gave the cookies to ___." (two people) \u2014 Which is correct?',hint:'Object pronoun for two people.',options:[{t:'them',c:true},{t:'they',c:false},{t:'their',c:false},{t:'themselves',c:false}]},
+      {q:'"That backpack is Uncle Rick\'s \u2014 it\'s ___." \u2014 Which is correct?',hint:'Possessive pronoun standing alone.',options:[{t:'his',c:true},{t:'him',c:false},{t:'he',c:false},{t:'himself',c:false}]},
+      {q:'"___ is Mr. Brown\'s car parked far down the street." \u2014 Which demonstrative is correct?',hint:'One thing, far away.',options:[{t:'That',c:true},{t:'This',c:false},{t:'These',c:false},{t:'Those',c:false}]},
+      {q:'"Cousin Max taught ___ to ride a skateboard." \u2014 Which reflexive is correct?',hint:'The action comes back to Cousin Max.',options:[{t:'himself',c:true},{t:'hisself',c:false},{t:'him',c:false},{t:'itself',c:false}]},
+      {q:'"___ backpack is the one with the broken zipper." (one man\'s backpack) \u2014 Which is correct?',hint:'Possessive adjective before a noun.',options:[{t:'His',c:true},{t:'Him',c:false},{t:'He',c:false},{t:'Himself',c:false}]},
+      {q:'"Buddy chased his tail and finally caught ___." \u2014 Which reflexive is correct?',hint:'Buddy is an animal = "it" form.',options:[{t:'it',c:true},{t:'itself',c:false},{t:'himself',c:false},{t:'themselves',c:false}]},
+      {q:'"Those is Mr. Brown\'s favorite books." \u2014 What needs to be corrected?',hint:'"Those" is plural.',options:[{t:'"is" should be "are"',c:true},{t:'"Those" should be "This"',c:false},{t:'"favorite" should be removed',c:false},{t:'Nothing is wrong',c:false}]},
+      {q:'"Did you and Cousin Lilly enjoy ___ at the fair?" \u2014 Which is correct?',hint:'Two people being addressed.',options:[{t:'yourselves',c:true},{t:'yourself',c:false},{t:'themselves',c:false},{t:'youself',c:false}]},
+      {q:'"Mom and Dad drove ___ new car to the lake." \u2014 Which is correct?',hint:'Possessive adjective before a noun (belonging to two people).',options:[{t:'their',c:true},{t:'theirs',c:false},{t:'they',c:false},{t:'them',c:false}]}
+    ]
+  }
+];
+
+function getSrc(){var p=new URLSearchParams(window.location.search);return p.get('src')||'';}
+function shuffle(arr){var a=arr.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+
+var state={screen:'menu',sectionIdx:0,qIdx:0,questions:[],pts:0,correct:0,wrong:0,hintUsed:false,answered:false};
+
+function render(){
+  var app=document.getElementById('app');
+  if(state.screen==='menu') app.innerHTML=renderMenu();
+  else if(state.screen==='quiz') app.innerHTML=renderQuiz();
+  else if(state.screen==='end') app.innerHTML=renderEnd();
+  if(state.screen==='end'){
+    var pct=state.questions.length>0?Math.round((state.correct/state.questions.length)*100):0;
+    if(pct>=70)[0,1,2,3,4].forEach(function(i){setTimeout(function(){var el=document.getElementById('star'+i);if(el)el.classList.add('show');},200+i*180);});
+  }
+}
+
+function renderMenu(){
+  var btns=SECTIONS.map(function(s,i){
+    return '<button class="menu-btn" style="background:'+s.grad+'" onclick="startSection('+i+')">'+s.emoji+' '+s.title+'</button>';
+  }).join('');
+  return '<div class="card menu-card"><div class="menu-inner"><div class="brand">Agarutan Print</div><div class="menu-emoji">\uD83D\uDCDA</div><h1>Welcome to the World of Pronouns!</h1><div class="menu-subtitle">All 6 Pronoun Types \u00b7 Grades 2\u20134</div>'+btns+'</div></div>';
+}
+
+function statsBar(){
+  var total=state.questions.length;
+  var pct=total>0?Math.round((state.correct/total)*100):0;
+  return '<div class="stats-bar">'
+    +'<div class="stat-item"><div class="stat-label pts">\u2B50 Points</div><div class="stat-value">'+state.pts+'</div></div>'
+    +'<div class="stat-item"><div class="stat-label ok">\u2705 Correct</div><div class="stat-value">'+state.correct+'</div></div>'
+    +'<div class="stat-item"><div class="stat-label err">\u274C Wrong</div><div class="stat-value">'+state.wrong+'</div></div>'
+    +'<div class="stat-item"><div class="stat-label pct">\uD83C\uDFAF Score</div><div class="stat-value">'+pct+'%</div></div>'
+    +'</div>';
+}
+
+function renderQuiz(){
+  var sec=SECTIONS[state.sectionIdx];
+  var q=state.questions[state.qIdx];
+  var total=state.questions.length;
+  var prog=Math.round((state.qIdx/total)*100);
+  var opts=q._shuffledOpts.map(function(o,i){
+    var cls='opt-btn';
+    if(state.answered){if(o.c)cls+=' correct';else if(o._chosen)cls+=' wrong';}
+    return '<button class="'+cls+'" '+(state.answered?'disabled':'')+' onclick="chooseOpt('+i+')">'+o.t+'</button>';
+  }).join('');
+  var feedback='';
+  if(state.answered){
+    var chose=q._shuffledOpts.filter(function(o){return o._chosen;})[0];
+    feedback=chose&&chose.c
+      ?'<div class="feedback correct">\u2705 Correct! +'+(state.hintUsed?5:10)+' points</div>'
+      :'<div class="feedback wrong">\u274C Not quite \u2014 the correct answer is highlighted in green.</div>';
+  }
+  var hintHtml=(!state.answered&&!state.hintUsed)?'<button class="hint-btn" onclick="showHint()">\uD83D\uDCA1 Show Hint (\u22125 pts)</button>':'';
+  var hintBox=state.hintUsed?'<div class="hint-box">\uD83D\uDCA1 '+q.hint+'</div>':'';
+  var nextLabel=state.qIdx<total-1?'Next \u2192':'See Results';
+  var nextBtn=state.answered?'<button class="next-btn" style="background:'+sec.grad+'" onclick="nextQ()">'+nextLabel+'</button>':'';
+  return '<div class="card">'
+    +statsBar()
+    +'<div class="sec-header"><h2><span class="sec-dot" style="background:'+sec.dot+'"></span>'+sec.emoji+' '+sec.title+'</h2><p>'+sec.subtitle+'</p></div>'
+    +'<div class="progress-wrap"><div class="progress-row"><span>Question '+(state.qIdx+1)+' of '+total+'</span><span>'+(state.qIdx+1)+'/'+total+'</span></div>'
+    +'<div class="progress-bar-bg"><div class="progress-bar-fill" style="width:'+prog+'%;background:'+sec.grad+'"></div></div></div>'
+    +'<div class="q-body"><div class="q-text"><span class="q-num">Q'+(state.qIdx+1)+'.</span> '+q.q+'</div>'
+    +opts+hintHtml+hintBox+feedback+nextBtn+'</div>'
+    +'<button class="exit-btn" onclick="goMenu()">\u2715 Exit to Menu</button></div>';
+}
+
+function renderEnd(){
+  var sec=SECTIONS[state.sectionIdx];
+  var total=state.questions.length;
+  var pct=total>0?Math.round((state.correct/total)*100):0;
+  var src=getSrc();
+  var isMastery=sec.id==='mastery';
+  var starHtml='<div class="stars">'+[0,1,2,3,4].map(function(i){return '<span class="star" id="star'+i+'">\u2B50</span>';}).join('')+'</div>';
+  var celebration='';
+  if(pct===100) celebration='<div class="end-icon">\uD83C\uDFC6</div><div class="end-title">\uD83C\uDFC6 Spectacular!</div>'+starHtml+'<div class="end-msg">Perfect score! Pronoun Expert!</div>';
+  else if(pct>=85) celebration='<div class="end-icon">\u2B50</div><div class="end-title">\u2B50 Excellent!</div>'+starHtml+'<div class="end-msg">You scored '+pct+'% \u2014 amazing work!</div>';
+  else if(pct>=70) celebration='<div class="end-icon">\uD83C\uDF1F</div><div class="end-title">\uD83C\uDF1F Great Job!</div>'+starHtml+'<div class="end-msg">You scored '+pct+'% \u2014 well done!</div>';
+  else celebration='<div class="end-icon">\uD83D\uDCAA</div><div class="end-title">Keep Practicing!</div><div class="end-msg">You got '+pct+'%. Review and try again \u2014 you can do it!</div>';
+  var pills='<div class="end-pills"><span class="end-pill ep-pts">\uD83C\uDFC5 '+state.pts+' pts</span><span class="end-pill ep-ok">\u2705 '+state.correct+'</span><span class="end-pill ep-err">\u274C '+state.wrong+'</span><span class="end-pill ep-pct">\uD83C\uDFAF '+pct+'%</span></div>';
+  var reviewBox='';
+  if(isMastery&&pct>=70&&src){
+    var btns='';
+    if(src==='etsy') btns='<a class="review-link-btn" href="https://www.etsy.com/your/purchases" target="_blank">\u2B50 Leave a Review on Etsy</a>';
+    else if(src==='amazon') btns='<a class="review-link-btn" href="https://www.amazon.com/review/create-review?asin='+PAPERBACK_ASIN+'" target="_blank">\u2B50 Review Paperback on Amazon</a>'+(HARDCOVER_ASIN?'<a class="review-link-btn" href="https://www.amazon.com/review/create-review?asin='+HARDCOVER_ASIN+'" target="_blank">\u2B50 Review Hardcover on Amazon</a>':'');
+    reviewBox='<div class="review-box"><h3>\uD83D\uDD12 Notice: For Parents &amp; Educators</h3><div class="rq">How did you like this complete resource bundle?</div><p>Thank you for choosing Agarutan Print! We hope this combination of printable worksheets, the digital fillable PDF, and the interactive quiz bonus is helping to build your student\'s skills.</p><p>If this comprehensive resource bundle added value to your student\'s learning experience, please take a brief moment to share your feedback. Your review helps us continue creating high-quality learning assets!</p>'+btns+'</div>';
+  }
+  return '<div class="card"><div class="end-wrap">'+celebration+pills
+    +'<button class="try-btn" style="background:'+sec.grad+'" onclick="startSection('+state.sectionIdx+')">\uD83D\uDD04 Try Again</button>'
+    +'<button class="menu-back-btn" onclick="goMenu()">\uD83C\uDFE0 Back to Menu</button>'
+    +reviewBox+'</div></div>';
+}
+
+window.startSection=function(idx){
+  var sec=SECTIONS[idx];
+  var qs=shuffle(sec.questions).map(function(q){
+    return {q:q.q,hint:q.hint,_shuffledOpts:shuffle(q.options.map(function(o){return {t:o.t,c:o.c,_chosen:false};}))};
+  });
+  state={screen:'quiz',sectionIdx:idx,qIdx:0,questions:qs,pts:0,correct:0,wrong:0,hintUsed:false,answered:false};
+  render();
+};
+window.chooseOpt=function(i){
+  if(state.answered) return;
+  var q=state.questions[state.qIdx];
+  q._shuffledOpts[i]._chosen=true;
+  state.answered=true;
+  if(q._shuffledOpts[i].c){state.pts+=state.hintUsed?5:10;state.correct++;}
+  else state.wrong++;
+  render();
+};
+window.showHint=function(){state.hintUsed=true;render();};
+window.nextQ=function(){state.qIdx++;state.answered=false;state.hintUsed=false;if(state.qIdx>=state.questions.length)state.screen='end';render();};
+window.goMenu=function(){state.screen='menu';render();};
+render();
+</script>
+</body>
+</html>
