@@ -70,8 +70,8 @@ body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#fdf4ff;
 <body>
 <div id="app"></div>
 <script>
-var PAPERBACK_ASIN='';
-var HARDCOVER_ASIN='';
+var PAPERBACK_ASIN='';// TBD
+var HARDCOVER_ASIN='B0H8KCZGVK';
 
 var SECTIONS=[
   {
@@ -312,7 +312,7 @@ function renderEnd(){
   if(isMastery&&pct>=70&&src){
     var btns='';
     if(src==='etsy') btns='<a class="review-link-btn" href="https://www.etsy.com/your/purchases" target="_blank">\u2B50 Leave a Review on Etsy</a>';
-    else if(src==='amazon') btns='<a class="review-link-btn" href="https://www.amazon.com/review/create-review?asin='+PAPERBACK_ASIN+'" target="_blank">\u2B50 Review Paperback on Amazon</a>'+(HARDCOVER_ASIN?'<a class="review-link-btn" href="https://www.amazon.com/review/create-review?asin='+HARDCOVER_ASIN+'" target="_blank">\u2B50 Review Hardcover on Amazon</a>':'');
+    else if(src==='amazon') btns=(PAPERBACK_ASIN?'<a class="review-link-btn" href="https://www.amazon.com/review/create-review?asin='+PAPERBACK_ASIN+'" target="_blank">\u2B50 Review Paperback on Amazon</a>':'')+(HARDCOVER_ASIN?'<a class="review-link-btn" href="https://www.amazon.com/review/create-review?asin='+HARDCOVER_ASIN+'" target="_blank">\u2B50 Review Hardcover on Amazon</a>':'');
     reviewBox='<div class="review-box"><h3>\uD83D\uDD12 Notice: For Parents &amp; Educators</h3><div class="rq">How did you like this complete resource bundle?</div><p>Thank you for choosing Agarutan Print! We hope this combination of printable worksheets, the digital fillable PDF, and the interactive quiz bonus is helping to build your student\'s skills.</p><p>If this comprehensive resource bundle added value to your student\'s learning experience, please take a brief moment to share your feedback. Your review helps us continue creating high-quality learning assets!</p>'+btns+'</div>';
   }
   return '<div class="card"><div class="end-wrap">'+celebration+pills
